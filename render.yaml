@@ -1,0 +1,33 @@
+# Render Blueprint – free plan (pair with a free Neon Postgres database).
+services:
+  - type: web
+    name: yagami-crm
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: cd web && npm ci --include=dev && npm run build && cd ../server && npm ci --include=dev && npm run build
+    startCommand: cd server && node dist/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: FILE_STORAGE
+        value: db
+      - key: MAX_UPLOAD_MB
+        value: "3"
+      - key: WEB_DIST
+        value: ../web/dist
+      - key: CRON_SECRET
+        generateValue: true
+      - key: DATABASE_URL          # paste the Neon connection string
+        sync: false
+      - key: BOOTSTRAP_OWNER_NAME
+        sync: false
+      - key: BOOTSTRAP_OWNER_USERNAME
+        sync: false
+      - key: BOOTSTRAP_OWNER_PASSWORD
+        sync: false
