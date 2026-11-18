@@ -128,6 +128,7 @@ function MoreMenu({ owner }: { owner: boolean }) {
           {owner && <button className="btn ghost block sm" style={{ justifyContent: 'flex-start', marginTop: 4 }} onClick={() => go('/team')}><Icon name="team" size={18} /> Team</button>}
           {owner && <button className="btn ghost block sm" style={{ justifyContent: 'flex-start', marginTop: 4 }} onClick={() => go('/audit')}><Icon name="shield" size={18} /> Audit log</button>}
           <button className="btn ghost block sm" style={{ justifyContent: 'flex-start', marginTop: 4 }} onClick={() => go('/password')}><Icon name="shield" size={18} /> Change password</button>
+          {(window as any).YG && <button className="btn ghost block sm" style={{ justifyContent: 'flex-start', marginTop: 4 }} onClick={() => confirm('Server link badalna hai?') && (window as any).YG.changeServer()}><Icon name="swap" size={18} /> Server link badlein</button>}
           <button className="btn ghost block sm" style={{ justifyContent: 'flex-start', marginTop: 4 }} onClick={logout}><Icon name="logout" size={18} /> Log out</button>
         </div>
       )}

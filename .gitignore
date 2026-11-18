@@ -4,3 +4,9 @@ dist/
 backups/
 uploads/
 test-uploads/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/keystore/
+android/keystore.properties
