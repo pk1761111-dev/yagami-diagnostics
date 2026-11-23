@@ -1,28 +1,44 @@
-name: Build YAGAMI APK
+name: Build APK
 on:
   push:
+    branches: [main]
+    tags: ['v*']
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Unzip source
-        run: |
-          ZIP=$(ls *.zip | head -1)
-          unzip -o "$ZIP" -d _src
-          APPDIR=$(dirname "$(find _src -name settings.gradle.kts | head -1)")
-          echo "APPDIR=$APPDIR" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-      - name: Build APK
+      - uses: android-actions/setup-android@v3
+      - name: Signing key from secret
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
         run: |
-          cd "$APPDIR"
+          if [ -n "$KEYSTORE_B64" ]; then echo "$KEYSTORE_B64" | base64 -d > $RUNNER_TEMP/yagami.jks; echo "YAGAMI_KEYSTORE=$RUNNER_TEMP/yagami.jks" >> $GITHUB_ENV; fi
+      - name: Build APK
+        env:
+          YAGAMI_KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
+        run: |
           chmod +x ./gradlew || true
-          ./gradlew assembleDebug --no-daemon -Dorg.gradle.jvmargs=-Xmx3g
+          ./gradlew testDebugUnitTest assembleRelease --no-daemon -Dorg.gradle.jvmargs=-Xmx3g
+          mkdir -p out && cp app/build/outputs/apk/release/*.apk out/YAGAMI-Diagnostics.apk
       - uses: actions/upload-artifact@v4
         with:
           name: YAGAMI-Diagnostics-APK
-          path: ${{ env.APPDIR }}/app/build/outputs/apk/debug/*.apk
+          path: out/YAGAMI-Diagnostics.apk
+      - name: Stop if signing key is missing (a release must use the YAGAMI key)
+        if: startsWith(github.ref, 'refs/tags/v') && env.YAGAMI_KEYSTORE == ''
+        run: |
+          echo "KEYSTORE_B64 / KEYSTORE_PASS secrets set nahi hain. Release nahi banegi." && exit 1
+      - name: Publish release (only for tags like v2.3.1)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: out/YAGAMI-Diagnostics.apk
+          generate_release_notes: true
