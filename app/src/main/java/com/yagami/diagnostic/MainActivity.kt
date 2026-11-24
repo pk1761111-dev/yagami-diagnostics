@@ -29,7 +29,7 @@ import java.util.concurrent.Executors
 
 class MainActivity : Activity() {
 
-    private enum class Screen { SPLASH, COMPANY, VEHICLE, DASHBOARD, CONNECT, SCAN, LIVE, CLEAR_DTC, FREEZE, ECU_INFO, ACTUATOR, ABS, REPORT, CODE, AI, READY, PRODUCTS, PRODUCT }
+    private enum class Screen { SPLASH, COMPANY, VEHICLE, DASHBOARD, CONNECT, SCAN, LIVE, CLEAR_DTC, FREEZE, ECU_INFO, ACTUATOR, ABS, REPORT, CODE, AI, READY, PRODUCTS, PRODUCT, LANG }
     private enum class Tab { HOME, SCAN, LIVE, REPORT, CONNECT, PRODUCTS }
 
     private val obd = Obd()
@@ -67,6 +67,7 @@ class MainActivity : Activity() {
         mode = prefs().getString("mode", "bt") ?: "bt"
         brand = prefs().getString("brand", null)
         model = prefs().getString("model", null)
+        Lang.load(this)
         DtcDb.init(this)
         ProductDb.init(this)
         Push.channel(this)
@@ -125,6 +126,7 @@ class MainActivity : Activity() {
             Screen.READY -> buildReady()
             Screen.PRODUCTS -> buildProducts()
             Screen.PRODUCT -> buildProduct()
+            Screen.LANG -> buildLang()
         }
     }
 
@@ -153,6 +155,11 @@ class MainActivity : Activity() {
         nm.addView(tv("YAGAMI", 17f, T.yellow, true).apply { letterSpacing = 0.2f })
         nm.addView(tv("AI DIAGNOSTICS", 9f, T.muted, true).apply { letterSpacing = 0.25f; setPadding(0, dp(4), 0, 0) })
         bar.addView(nm, lp(0, -2, 1f))
+        bar.addView(TextView(this).apply {
+            text = "🌐 " + Lang.current().native.take(3); textSize = 11.5f; setTextColor(T.white); typeface = Typeface.DEFAULT_BOLD
+            setPadding(dp(9), dp(5), dp(9), dp(5)); background = rounded(T.cardHi, dpf(999f), T.stroke, dp(1)); isClickable = true
+            setOnClickListener { navigate(Screen.LANG) }
+        }, lp(-2, -2).apply { marginEnd = dp(10) })
         bar.addView(tv(if (obd.connected) "● LIVE" else "○ OFFLINE", 11f, if (obd.connected) T.green else T.grey, true).apply { letterSpacing = 0.1f }, lp(-2, -2).apply { marginEnd = dp(12) })
         bar.addView(bellButton(), lp(dp(42), dp(42)))
         return bar
@@ -184,7 +191,7 @@ class MainActivity : Activity() {
             addView(IconView(this@MainActivity, "back", T.white), FrameLayout.LayoutParams(dp(20), dp(20), Gravity.CENTER))
         }, lp(dp(38), dp(38)).apply { marginEnd = dp(12) })
         val c = col()
-        c.addView(tv(label.uppercase(), 10f, T.muted, true).apply { letterSpacing = 0.1f })
+        c.addView(tv(Lang.tr(label).uppercase(), 10f, T.muted, true).apply { letterSpacing = 0.1f })
         c.addView(tv(title, 17f, T.yellow, true).apply { typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD); setPadding(0, dp(3), 0, 0); maxLines = 1 })
         bar.addView(c, lp(0, -2, 1f))
         if (badgeText != null) bar.addView(badge(badgeText, badgeColor), lp(-2, -2))
@@ -248,7 +255,7 @@ class MainActivity : Activity() {
         return r
     }
 
-    private fun sectionTitle(text: String): TextView = tv(text.uppercase(), 10.5f, T.muted, true).apply {
+    private fun sectionTitle(text: String): TextView = tv(Lang.tr(text).uppercase(), 10.5f, T.muted, true).apply {
         letterSpacing = 0.12f; setPadding(dp(2), dp(16), 0, dp(8))
     }
 
@@ -299,7 +306,7 @@ class MainActivity : Activity() {
 
     /** Card with an uppercase heading, like the Settings sections. */
     private fun sectionCard(title: String): LinearLayout = card().apply {
-        addView(tv(title.uppercase(), 11f, T.muted, true).apply { letterSpacing = 0.12f; setPadding(0, 0, 0, dp(10)) })
+        addView(tv(Lang.tr(title).uppercase(), 11f, T.muted, true).apply { letterSpacing = 0.12f; setPadding(0, 0, 0, dp(10)) })
     }
 
     /** Stat card: label, big coloured value, colour bar at the bottom, glow when [glow]. */
@@ -369,7 +376,7 @@ class MainActivity : Activity() {
                 val p = pairs.getOrNull(i + j)
                 val cell = col()
                 if (p != null) {
-                    cell.addView(tv(p.first.uppercase(), 10.5f, T.muted, true).apply { letterSpacing = 0.1f })
+                    cell.addView(tv(Lang.tr(p.first).uppercase(), 10.5f, T.muted, true).apply { letterSpacing = 0.1f })
                     cell.addView(tv(p.second, 14f, if (p.first in highlight) T.orange else T.white, true).apply { setPadding(0, dp(5), dp(6), 0) })
                 }
                 r.addView(cell, lp(0, -2, 1f))
@@ -430,6 +437,7 @@ class MainActivity : Activity() {
         net.execute {
             if (doDb && DtcDb.refresh(this).startsWith("Code database")) prefs().edit().putString("db_day", today).apply()
             OnlineConfig.refreshRemote(this)
+            Lang.refresh(this)
             if (ProductDb.url(this).isNotBlank()) ProductDb.refresh(this)
             val (u, _) = Updater.check(this, appVersion())
             ui.post { updateInfo = u; if (screen == Screen.DASHBOARD) buildDashboard() }
@@ -482,12 +490,38 @@ class MainActivity : Activity() {
         ui.postDelayed({
             if (screen == Screen.SPLASH) {
                 backStack.clear()
-                show(Screen.DASHBOARD)          // always open on Home; bike is picked from "Change bike"
+                if (!Lang.chosen(this)) show(Screen.LANG) else show(Screen.DASHBOARD)   // first launch: pick language
             }
         }, 1400)
     }
 
     // ================= Select Company / Vehicle =================
+
+    // ================= Language =================
+
+    private fun buildLang() {
+        val first = !Lang.chosen(this)
+        val (root, body) = shell(if (first) appBar() else detailBar("Bhasha / Language", Lang.current().native), null)
+        body.addView(tv("Bhasha chunein", 24f, T.white, true), lp(-1, -2))
+        body.addView(tv("Choose language · भाषा चुनें", 13f, T.muted).apply { setPadding(0, dp(6), 0, dp(14)) }, lp(-1, -2))
+        grid(body, 2, Lang.ALL.map { l ->
+            val on = l.code == Lang.code && !first
+            col().apply {
+                setPadding(dp(14), dp(16), dp(14), dp(16))
+                background = ripple(if (on) vgradient(dpf(16f), alpha(T.yellow, 34), T.card).apply { setStroke(dp(1), T.yellow) }
+                    else rounded(T.card, dpf(16f), T.stroke, dp(1)), dpf(16f))
+                isClickable = true
+                setOnClickListener {
+                    Lang.set(this@MainActivity, l.code)
+                    net.execute { Lang.refresh(this@MainActivity) }
+                    backStack.clear(); show(Screen.DASHBOARD)
+                }
+                addView(TextView(this@MainActivity).apply { text = l.native; textSize = 20f; setTextColor(if (on) T.yellow else T.white); typeface = Typeface.DEFAULT_BOLD })
+                addView(TextView(this@MainActivity).apply { text = l.english; textSize = 12f; setTextColor(T.muted); setPadding(0, dp(4), 0, 0) })
+            } as View
+        })
+        setContentView(root)
+    }
 
     // ================= Vehicle picker: Company → Model → Ready =================
 
@@ -510,7 +544,7 @@ class MainActivity : Activity() {
     }
 
     private fun searchBox(hint: String, onChange: (String) -> Unit): EditText = field(pickQuery).apply {
-        this.hint = "⌕  $hint"
+        this.hint = Lang.tr("⌕  $hint")
         addTextChangedListener(object : android.text.TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
             override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
@@ -749,7 +783,7 @@ class MainActivity : Activity() {
         when {
             res == null -> body.addView(alertRow("Scan nahi hua", "All ECU Scan chalayein. Har ECU ke codes yahan dikhenge.", "—", T.grey) { ensureConnected { goTab(Tab.SCAN) } }, lp(-1, -2))
             all.isEmpty() -> body.addView(alertRow("Koi fault code nahi", "${res.size} ECU scan hue · sab saaf", ago(scanTime), T.green), lp(-1, -2))
-            else -> for ((code, kind, ecu) in all.take(5)) body.addView(alertRow("$code · ${kind.uppercase()}", Data.describe(code), ago(scanTime),
+            else -> for ((code, kind, ecu) in all.take(5)) body.addView(alertRow("$code · ${Lang.tr(kind).uppercase()}", Data.describe(code), ago(scanTime),
                 if (kind == "Stored") T.red else if (kind == "Pending") T.orange else T.purple) { selectedCode = Triple(code, kind, ecu); navigate(Screen.CODE) }, lp(-1, -2).apply { bottomMargin = dp(8) })
         }
 
@@ -927,7 +961,7 @@ class MainActivity : Activity() {
         ai.addView(tv(when { has -> "Chalu ✓ (is phone ki apni key)"; srv -> "Chalu ✓ (YAGAMI server, key ki zaroorat nahi)"; else -> "YAGAMI server abhi set nahi hua" },
             12.5f, if (has || srv) T.green else T.muted, true))
         ai.addView(tv("Apni Gemini key (optional, sirf advanced use)", 11.5f, T.muted).apply { setPadding(0, dp(10), 0, dp(6)) })
-        val key = field("").apply { hint = "AIza…"; inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD }
+        val key = field("").apply { hint = Lang.tr("AIza…"); inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD }
         ai.addView(key, lp(-1, dp(48)))
         val aiRow = row().apply { setPadding(0, dp(10), 0, 0) }
         aiRow.addView(primary("Save key") {
@@ -942,9 +976,9 @@ class MainActivity : Activity() {
         val prInfo = tv(if (ProductDb.items.isEmpty()) "Abhi koi product nahi" else "${ProductDb.items.size} products · update ${ago(ProductDb.updated)}", 13f, T.white, true)
         pr.addView(prInfo)
         pr.addView(tv("Google Drive ki 'YAGAMI Products' sheet se aata hai (link pehle se set hai). Sheet badlo, app mein apne-aap badlega.", 12f, T.muted).apply { setPadding(0, dp(6), 0, dp(10)) })
-        val prUrl = field(ProductDb.url(this)).apply { hint = "https://docs.google.com/…output=csv" }
+        val prUrl = field(ProductDb.url(this)).apply { hint = Lang.tr("https://docs.google.com/…output=csv") }
         pr.addView(prUrl, lp(-1, dp(48)))
-        val wa = field(prefs().getString("wa_number", "").orEmpty()).apply { hint = "Order WhatsApp number (9876543210)"; inputType = android.text.InputType.TYPE_CLASS_PHONE }
+        val wa = field(prefs().getString("wa_number", "").orEmpty()).apply { hint = Lang.tr("Order WhatsApp number (9876543210)"); inputType = android.text.InputType.TYPE_CLASS_PHONE }
         pr.addView(wa, lp(-1, dp(48)).apply { topMargin = dp(8) })
         val prRow = row().apply { setPadding(0, dp(10), 0, 0) }
         prRow.addView(primary("Save + Refresh") {
@@ -1057,7 +1091,7 @@ class MainActivity : Activity() {
             else grid(gridBox, 2, list.map { productCard(it) })
         }
         body.addView(field(prodQuery).apply {
-            hint = "⌕  Product dhoondo"
+            hint = Lang.tr("⌕  Product dhoondo")
             addTextChangedListener(object : android.text.TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
                 override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
@@ -1151,6 +1185,7 @@ class MainActivity : Activity() {
         if (lastLive.isNotEmpty()) { sb.append("Live data (aakhri reading):\n"); lastLive.forEach { (k, v) -> sb.append("- ").append(k).append(": ").append(v).append('\n') } }
         selectedCode?.let { sb.append("\nKhaas taur par is code ke baare mein batao: ").append(it.first).append('\n') }
         sb.append("\nBatao: 1) sabse sambhavit kaaran kya hai, 2) mechanic kis order mein kya check kare, 3) kya bike chalana safe hai. Chhota rakho.")
+        sb.append("\nIMPORTANT: Reply only in ").append(Lang.aiLanguage()).append(".")
         return sb.toString()
     }
 
@@ -1159,7 +1194,7 @@ class MainActivity : Activity() {
      * Gemini app if installed (prompt pre-filled through Share), else gemini.google.com with the prompt copied.
      */
     private fun askOwnGemini(prompt: String) {
-        val full = "Tum ek anubhavi Indian two-wheeler mechanic ho. Hinglish mein chhota jawab do, safety pehle.\n\n$prompt"
+        val full = "You are an experienced Indian two-wheeler mechanic. Short answer, safety first. Reply only in ${Lang.aiLanguage()}.\n\n$prompt"
         (getSystemService(CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(ClipData.newPlainText("YAGAMI AI", full))
         val send = Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, full); setPackage("com.google.android.apps.bard") }
         try {
@@ -1209,7 +1244,7 @@ class MainActivity : Activity() {
         for (c in a.codes) {
             val clr = if (c.kind == "Pending") T.orange else if (c.kind == "Permanent") T.purple else T.red
             val (o, i) = edgeCard(clr)
-            i.addView(tv("${c.kind.uppercase()} · ${c.ecu.uppercase()}", 11f, clr, true).apply { letterSpacing = 0.1f })
+            i.addView(tv("${Lang.tr(c.kind).uppercase()} · ${Lang.tr(c.ecu).uppercase()}", 11f, clr, true).apply { letterSpacing = 0.1f })
             i.addView(tv("${c.code} — ${c.name}", 16f, T.white, true).apply { setPadding(0, dp(6), 0, dp(8)) })
             i.addView(tv("Sambhavit kaaran", 11f, T.muted, true).apply { letterSpacing = 0.1f })
             c.causes.forEach { i.addView(tv("•  $it", 13.5f, T.white).apply { setPadding(0, dp(3), 0, dp(3)) }) }
@@ -1219,7 +1254,7 @@ class MainActivity : Activity() {
             body.addView(o, lp(-1, -2).apply { bottomMargin = dp(10) })
         }
         body.addView(primary("Salah share karo") {
-            startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, adviceText(a)) }, "Share"))
+            startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, Lang.tr(adviceText(a))) }, "Share"))
         }, lp(-1, dp(50)).apply { bottomMargin = dp(16) })
     }
 
@@ -1317,7 +1352,7 @@ class MainActivity : Activity() {
             val c = if (kind == "Stored") T.red else if (kind == "Pending") T.orange else T.purple
             val (o, i) = edgeCard(c)
             val h = row()
-            h.addView(tv("${kind.uppercase()} · ${ecu.uppercase()}", 11f, c, true).apply { letterSpacing = 0.1f }, lp(0, -2, 1f))
+            h.addView(tv("${Lang.tr(kind).uppercase()} · ${Lang.tr(ecu).uppercase()}", 11f, c, true).apply { letterSpacing = 0.1f }, lp(0, -2, 1f))
             h.addView(tv(ago(scanTime), 12f, T.muted), lp(-2, -2))
             i.addView(h)
             i.addView(tv(code, 17f, T.white, true).apply { typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD); setPadding(0, dp(8), 0, 0) })
@@ -1362,7 +1397,7 @@ class MainActivity : Activity() {
     private fun dtcCard(code: String, kind: String): LinearLayout {
         val c = if (kind == "Pending") T.orange else if (kind == "Permanent") T.purple else T.red
         val (o, i) = edgeCard(c)
-        i.addView(tv(kind.uppercase(), 11f, c, true).apply { letterSpacing = 0.12f })
+        i.addView(tv(Lang.tr(kind).uppercase(), 11f, c, true).apply { letterSpacing = 0.12f })
         i.addView(tv(code, 17f, T.white, true).apply { typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD); setPadding(0, dp(8), 0, 0) })
         i.addView(tv(Data.describe(code), 13f, T.muted).apply { setPadding(0, dp(4), 0, 0) })
         return o
@@ -1633,10 +1668,10 @@ class MainActivity : Activity() {
 
     private fun confirmRun(tid: Int, out: TextView) {
         AlertDialog.Builder(this)
-            .setTitle("Run test %02X?".format(tid))
-            .setMessage("Bike stand par, engine band, ignition ON. Test ke dauran koi part chal sakta hai.")
-            .setNegativeButton("Cancel", null)
-            .setPositiveButton("Run") { _, _ ->
+            .setTitle(Lang.tr("Run test {0}?").replace("{0}", "%02X".format(tid)))
+            .setMessage(Lang.tr("Bike stand par, engine band, ignition ON. Test ke dauran koi part chal sakta hai."))
+            .setNegativeButton(Lang.tr("Cancel"), null)
+            .setPositiveButton(Lang.tr("Run")) { _, _ ->
                 io.execute {
                     val r = obd.mode08Run(tid)
                     actuatorLog.add("08%02X → ".format(tid) + r.joinToString(" ").ifBlank { "no reply" })
@@ -1713,7 +1748,7 @@ class MainActivity : Activity() {
         val i = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_SUBJECT, "YAGAMI Diagnostic Report")
-            putExtra(Intent.EXTRA_TEXT, reportText())
+            putExtra(Intent.EXTRA_TEXT, Lang.tr(reportText()))
         }
         try { startActivity(Intent.createChooser(i, "Share report")) } catch (e: Exception) { toast("Share nahi ho paya") }
     }
@@ -1735,7 +1770,7 @@ class MainActivity : Activity() {
         body.addView(pre, lp(-1, -2))
         val btns = row().apply { setPadding(0, dp(12), 0, 0) }
         btns.addView(ghost("Copy") {
-            (getSystemService(CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(ClipData.newPlainText("YAGAMI report", reportText()))
+            (getSystemService(CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(ClipData.newPlainText("YAGAMI report", Lang.tr(reportText())))
             toast("Report copy ho gayi")
         }, lp(0, dp(50), 1f).apply { marginEnd = dp(10) })
         btns.addView(primary("Share") { shareReport() }, lp(0, dp(50), 1f))
@@ -1753,7 +1788,7 @@ class MainActivity : Activity() {
         background = rounded(T.cardHi, dpf(12f), T.stroke, dp(1))
     }
 
-    private fun toast(m: String) = Toast.makeText(this, m, Toast.LENGTH_SHORT).show()
+    private fun toast(m: String) = Toast.makeText(this, Lang.tr(m), Toast.LENGTH_SHORT).show()
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

@@ -43,7 +43,7 @@ fun Context.dpf(v: Float): Float = v * resources.displayMetrics.density
 
 fun Context.tv(text: CharSequence, size: Float, color: Int, bold: Boolean = false): TextView =
     TextView(this).apply {
-        this.text = text
+        this.text = Lang.tr(text)
         setTextSize(TypedValue.COMPLEX_UNIT_SP, size)
         setTextColor(color)
         if (bold) typeface = android.graphics.Typeface.DEFAULT_BOLD

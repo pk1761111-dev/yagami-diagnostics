@@ -11,8 +11,8 @@ android {
         applicationId = "com.yagami.diagnostic"
         minSdk = 26
         targetSdk = 34
-        versionCode = 40
-        versionName = "2.7.0"
+        versionCode = 41
+        versionName = "2.8.0"
     }
     // One fixed key so every update installs over the previous version.
     // Path + password come from env (GitHub secret in CI), never from the repo.
