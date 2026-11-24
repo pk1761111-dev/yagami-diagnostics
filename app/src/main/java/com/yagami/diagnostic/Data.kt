@@ -90,6 +90,7 @@ object Data {
     fun describe(code: String): String {
         DtcDb.get(code)?.name?.takeIf { it.isNotBlank() }?.let { return it }
         dtcInfo[code]?.let { return it }
+        if (code.length == 5) return Advisor.family(code).first
         return when {
             code.length >= 2 && code[1] != '0' -> "Manufacturer-specific code — see service manual"
             code.startsWith("P") -> "Engine / powertrain fault"

@@ -16,8 +16,8 @@ class OnlineTest {
 
     @Test fun bundledDatabaseParses() {
         val (v, m) = DtcDb.parse(File("src/main/assets/dtc_codes.json").readText())
-        assertEquals("2026-11-23", v)
-        assertTrue(m.size >= 60)
+        assertEquals("2026-11-24", v)
+        assertTrue(m.size >= 140)
         val e = m["P0133"]!!
         assertTrue(e.name.contains("O2") && e.causes.isNotEmpty() && e.checks.isNotEmpty())
     }

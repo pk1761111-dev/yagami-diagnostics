@@ -1169,15 +1169,70 @@ class MainActivity : Activity() {
         openUrl("https://gemini.google.com/app")
     }
 
+    /** Codes for the advice: the whole last scan, with the selected code first. */
+    private fun adviceCodes(): List<Triple<String, String, String>> {
+        val all = scanResults?.flatMap { (ecu, l) -> l.map { Triple(it.first, it.second, ecu) } }.orEmpty().toMutableList()
+        selectedCode?.let { sel -> all.removeAll { it.first == sel.first }; all.add(0, sel) }
+        return all
+    }
+
+    private fun adviceText(a: Advisor.Advice): String {
+        val sb = StringBuilder("YAGAMI Turant Salah — ${listOfNotNull(brand, model).joinToString(" ")}\n${a.summary}\n")
+        if (a.safety.isNotEmpty()) { sb.append("\n⚠ Safety:\n"); a.safety.forEach { sb.append("• ").append(it).append('\n') } }
+        sb.append("\nSabse pehle:\n"); a.firstSteps.forEachIndexed { i, t -> sb.append(i + 1).append(". ").append(t).append('\n') }
+        for (c in a.codes) {
+            sb.append("\n").append(c.code).append(" — ").append(c.name).append("\nKaaran: ").append(c.causes.joinToString("; "))
+                .append("\nJaanch: ").append(c.checks.joinToString("; ")).append('\n')
+        }
+        return sb.toString()
+    }
+
+    /** Offline, automatic advice at the top of the AI screen. */
+    private fun addTurantSalah(body: LinearLayout) {
+        val codes = adviceCodes()
+        if (codes.isEmpty()) {
+            body.addView(banner("SCAN", if (scanResults == null) "Pehle All ECU Scan chalao. Codes milte hi yahan turant salah aa jayegi." else "Koi fault code nahi hai — bike ka ECU saaf hai."), lp(-1, -2).apply { bottomMargin = dp(12) })
+            return
+        }
+        val a = Advisor.build(codes, lastBattery) { DtcDb.get(it) }
+        val head = card().apply { background = vgradient(dpf(16f), alpha(T.yellow, 34), T.card).apply { setStroke(dp(1), alpha(T.yellow, 90)) } }
+        val hr = row()
+        hr.addView(tv("TURANT SALAH", 11f, T.yellow, true).apply { letterSpacing = 0.14f }, lp(0, -2, 1f))
+        hr.addView(badge("Offline", T.green), lp(-2, -2))
+        head.addView(hr)
+        head.addView(tv(a.summary, 16f, T.white, true).apply { setPadding(0, dp(8), 0, 0) })
+        body.addView(head, lp(-1, -2).apply { bottomMargin = dp(10) })
+        for (w in a.safety) body.addView(banner("SAFETY", w, T.red), lp(-1, -2).apply { bottomMargin = dp(8) })
+        val first = sectionCard("Sabse pehle ye karo")
+        a.firstSteps.forEachIndexed { i, t -> first.addView(tv("${i + 1}.  $t", 14f, T.white).apply { setPadding(0, dp(4), 0, dp(4)) }) }
+        body.addView(first, lp(-1, -2).apply { bottomMargin = dp(10) })
+        for (c in a.codes) {
+            val clr = if (c.kind == "Pending") T.orange else if (c.kind == "Permanent") T.purple else T.red
+            val (o, i) = edgeCard(clr)
+            i.addView(tv("${c.kind.uppercase()} · ${c.ecu.uppercase()}", 11f, clr, true).apply { letterSpacing = 0.1f })
+            i.addView(tv("${c.code} — ${c.name}", 16f, T.white, true).apply { setPadding(0, dp(6), 0, dp(8)) })
+            i.addView(tv("Sambhavit kaaran", 11f, T.muted, true).apply { letterSpacing = 0.1f })
+            c.causes.forEach { i.addView(tv("•  $it", 13.5f, T.white).apply { setPadding(0, dp(3), 0, dp(3)) }) }
+            i.addView(tv("Jaanch", 11f, T.muted, true).apply { letterSpacing = 0.1f; setPadding(0, dp(8), 0, 0) })
+            c.checks.forEachIndexed { k, t -> i.addView(tv("${k + 1}.  $t", 13.5f, T.white).apply { setPadding(0, dp(3), 0, dp(3)) }) }
+            if (!c.fromDb) i.addView(tv("Is code ki khaas jaankari database mein nahi hai; ye code ke group ke hisaab se aam salah hai.", 11.5f, T.muted).apply { setPadding(0, dp(8), 0, 0) })
+            body.addView(o, lp(-1, -2).apply { bottomMargin = dp(10) })
+        }
+        body.addView(primary("Salah share karo") {
+            startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, adviceText(a)) }, "Share"))
+        }, lp(-1, dp(50)).apply { bottomMargin = dp(16) })
+    }
+
     private fun buildAi() {
         val focus = selectedCode?.first
         if (focus != aiFocus) { aiAnswer = null; aiFocus = focus }
-        val (root, body) = shell(detailBar("AI salah", focus ?: "Poori bike", "Online", T.green), Tab.HOME)
+        val (root, body) = shell(detailBar("AI salah", focus ?: "Poori bike", "Offline ✓", T.green), Tab.HOME)
         val key = prefs().getString("ai_key", "").orEmpty()
         val server = OnlineConfig.aiUrl(this)
-        val own = card().apply { background = vgradient(dpf(16f), alpha(T.blue, 34), T.card).apply { setStroke(dp(1), alpha(T.blue, 110)) } }
-        own.addView(tv("Apne Google Gemini se poochho", 16f, T.white, true))
-        own.addView(tv("Aapke Google ID wala Gemini · free · internet search ke saath. Codes aur bike ki jaankari apne-aap bhar jayegi.", 12.5f, T.muted).apply { setPadding(0, dp(4), 0, dp(12)) })
+        addTurantSalah(body)
+        val own = card().apply { background = vgradient(dpf(16f), alpha(T.blue, 24), T.card).apply { setStroke(dp(1), alpha(T.blue, 80)) } }
+        own.addView(tv("Aur detail chahiye?", 15f, T.white, true))
+        own.addView(tv("Apne Google Gemini se poochho · free · internet search ke saath. Codes apne-aap bhar jayenge.", 12.5f, T.muted).apply { setPadding(0, dp(4), 0, dp(12)) })
         own.addView(tv("Gemini mein poochho", 15.5f, Color.WHITE, true).apply {
             gravity = Gravity.CENTER; isClickable = true
             background = ripple(rounded(T.blue, dpf(12f)), dpf(12f))
@@ -1185,7 +1240,6 @@ class MainActivity : Activity() {
         }, lp(-1, dp(50)))
         body.addView(own, lp(-1, -2).apply { bottomMargin = dp(12) })
         if (key.isBlank() && server.isBlank()) {
-            if (scanResults == null && focus == null) body.addView(banner("TIP", "Pehle All ECU Scan chalao, taaki AI ko codes mil sakein."), lp(-1, -2).apply { bottomMargin = dp(12) })
             val what0 = sectionCard("AI ko ye bheja jayega")
             what0.addView(tv(aiPrompt().substringBefore("\nBatao:"), 12f, T.muted).apply { typeface = Typeface.MONOSPACE })
             body.addView(what0, lp(-1, -2))

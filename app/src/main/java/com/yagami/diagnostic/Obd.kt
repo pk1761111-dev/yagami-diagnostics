@@ -145,7 +145,9 @@ class Obd {
         val probe = transact("0100", 8000)
         val dpn = transact("ATDPN").joinToString("")
         isCan = Elm.isCanProtocol(dpn)
-        protocol = transact("ATDP").joinToString(" ").ifBlank { dpn }
+        // Some clones answer ATDP with just "AUTO," — fall back to the protocol number.
+        val dp = transact("ATDP").joinToString(" ").trim()
+        protocol = if (dp.length > 8 && !dp.endsWith(",")) dp else Elm.protocolName(dpn)
         detected = false
         return !Elm.isNoData(probe) && probe.joinToString(" ").uppercase().contains("41")
     }

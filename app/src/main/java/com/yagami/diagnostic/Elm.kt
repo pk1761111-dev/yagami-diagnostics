@@ -175,5 +175,15 @@ object Elm {
         else -> "ECU $addr"
     }
 
+    /** Human name for an ATDPN protocol number (e.g. "A6" -> ISO 15765-4 CAN 11/500). */
+    fun protocolName(dpn: String): String = when (dpn.trim().uppercase().lastOrNull()) {
+        '1' -> "SAE J1850 PWM"; '2' -> "SAE J1850 VPW"; '3' -> "ISO 9141-2 (K-line)"
+        '4' -> "ISO 14230-4 KWP (5 baud)"; '5' -> "ISO 14230-4 KWP (fast)"
+        '6' -> "ISO 15765-4 CAN 11/500"; '7' -> "ISO 15765-4 CAN 29/500"
+        '8' -> "ISO 15765-4 CAN 11/250"; '9' -> "ISO 15765-4 CAN 29/250"
+        'A' -> "SAE J1939 CAN"; 'B', 'C' -> "User CAN"
+        else -> "—"
+    }
+
     fun isHex(s: String): Boolean = s.isNotEmpty() && s.all { it.uppercaseChar() in HEX }
 }

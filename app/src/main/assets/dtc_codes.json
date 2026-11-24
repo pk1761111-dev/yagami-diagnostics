@@ -1,5 +1,5 @@
 {
- "version": "2026-11-23",
+ "version": "2026-11-24",
  "codes": {
   "C0031": {
    "n": "Wheel speed sensor circuit (front/rear: service manual dekhein)",
@@ -114,6 +114,228 @@
     "Fuse aur 12V supply check karo"
    ]
   },
+  "P0036": {
+   "n": "O2 sensor heater control circuit (Bank 1 Sensor 2)",
+   "c": [
+    "O2 sensor ka heater kharab",
+    "Wiring/connector dhila, kata ya corroded",
+    "Heater fuse udd gaya"
+   ],
+   "s": [
+    "O2 sensor connector kholkar dekho",
+    "Heater resistance multimeter se check karo (aam taur par 3–15 Ω)",
+    "Heater ka fuse aur 12V supply check karo"
+   ]
+  },
+  "P0037": {
+   "n": "O2 sensor heater circuit low (Bank 1 Sensor 2)",
+   "c": [
+    "Heater wire short to ground",
+    "O2 sensor heater kharab",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "O2 sensor connector kholkar dekho",
+    "Heater resistance multimeter se check karo (aam taur par 3–15 Ω)",
+    "Heater ka fuse aur 12V supply check karo"
+   ]
+  },
+  "P0038": {
+   "n": "O2 sensor heater circuit high (Bank 1 Sensor 2)",
+   "c": [
+    "Heater wire open / short to 12V",
+    "O2 sensor heater kharab"
+   ],
+   "s": [
+    "O2 sensor connector kholkar dekho",
+    "Heater resistance multimeter se check karo (aam taur par 3–15 Ω)",
+    "Heater ka fuse aur 12V supply check karo"
+   ]
+  },
+  "P0050": {
+   "n": "O2 sensor heater control circuit (Bank 2 Sensor 1)",
+   "c": [
+    "O2 sensor ka heater kharab",
+    "Wiring/connector dhila, kata ya corroded",
+    "Heater fuse udd gaya"
+   ],
+   "s": [
+    "O2 sensor connector kholkar dekho",
+    "Heater resistance multimeter se check karo (aam taur par 3–15 Ω)",
+    "Heater ka fuse aur 12V supply check karo"
+   ]
+  },
+  "P0051": {
+   "n": "O2 sensor heater circuit low (Bank 2 Sensor 1)",
+   "c": [
+    "Heater wire short to ground",
+    "O2 sensor heater kharab",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "O2 sensor connector kholkar dekho",
+    "Heater resistance multimeter se check karo (aam taur par 3–15 Ω)",
+    "Heater ka fuse aur 12V supply check karo"
+   ]
+  },
+  "P0052": {
+   "n": "O2 sensor heater circuit high (Bank 2 Sensor 1)",
+   "c": [
+    "Heater wire open / short to 12V",
+    "O2 sensor heater kharab"
+   ],
+   "s": [
+    "O2 sensor connector kholkar dekho",
+    "Heater resistance multimeter se check karo (aam taur par 3–15 Ω)",
+    "Heater ka fuse aur 12V supply check karo"
+   ]
+  },
+  "P0053": {
+   "n": "O2 sensor heater resistance (Bank 1 Sensor 1)",
+   "c": [
+    "O2 sensor ka heater kharab (resistance galat) — sabse aam kaaran",
+    "Connector pins mein jung / dhila",
+    "Galat (non-original) O2 sensor laga hai"
+   ],
+   "s": [
+    "Engine thanda karke O2 sensor ka connector kholo",
+    "Heater ke do pins par resistance naapo (aam taur par 3–15 Ω; open = sensor kharab)",
+    "Connector saaf karo; resistance galat ho to O2 sensor badlo",
+    "Code clear karke ride ke baad dobara scan karo"
+   ]
+  },
+  "P0054": {
+   "n": "O2 sensor heater resistance (Bank 1 Sensor 2)",
+   "c": [
+    "O2 sensor ka heater kharab (resistance galat) — sabse aam kaaran",
+    "Connector pins mein jung / dhila",
+    "Galat (non-original) O2 sensor laga hai"
+   ],
+   "s": [
+    "Engine thanda karke O2 sensor ka connector kholo",
+    "Heater ke do pins par resistance naapo (aam taur par 3–15 Ω; open = sensor kharab)",
+    "Connector saaf karo; resistance galat ho to O2 sensor badlo",
+    "Code clear karke ride ke baad dobara scan karo"
+   ]
+  },
+  "P0056": {
+   "n": "O2 sensor heater control circuit (Bank 2 Sensor 2)",
+   "c": [
+    "O2 sensor ka heater kharab",
+    "Wiring/connector dhila, kata ya corroded",
+    "Heater fuse udd gaya"
+   ],
+   "s": [
+    "O2 sensor connector kholkar dekho",
+    "Heater resistance multimeter se check karo (aam taur par 3–15 Ω)",
+    "Heater ka fuse aur 12V supply check karo"
+   ]
+  },
+  "P0057": {
+   "n": "O2 sensor heater circuit low (Bank 2 Sensor 2)",
+   "c": [
+    "Heater wire short to ground",
+    "O2 sensor heater kharab",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "O2 sensor connector kholkar dekho",
+    "Heater resistance multimeter se check karo (aam taur par 3–15 Ω)",
+    "Heater ka fuse aur 12V supply check karo"
+   ]
+  },
+  "P0058": {
+   "n": "O2 sensor heater circuit high (Bank 2 Sensor 2)",
+   "c": [
+    "Heater wire open / short to 12V",
+    "O2 sensor heater kharab"
+   ],
+   "s": [
+    "O2 sensor connector kholkar dekho",
+    "Heater resistance multimeter se check karo (aam taur par 3–15 Ω)",
+    "Heater ka fuse aur 12V supply check karo"
+   ]
+  },
+  "P0059": {
+   "n": "O2 sensor heater resistance (Bank 2 Sensor 1)",
+   "c": [
+    "O2 sensor ka heater kharab (resistance galat) — sabse aam kaaran",
+    "Connector pins mein jung / dhila",
+    "Galat (non-original) O2 sensor laga hai"
+   ],
+   "s": [
+    "Engine thanda karke O2 sensor ka connector kholo",
+    "Heater ke do pins par resistance naapo (aam taur par 3–15 Ω; open = sensor kharab)",
+    "Connector saaf karo; resistance galat ho to O2 sensor badlo",
+    "Code clear karke ride ke baad dobara scan karo"
+   ]
+  },
+  "P0060": {
+   "n": "O2 sensor heater resistance (Bank 2 Sensor 2)",
+   "c": [
+    "O2 sensor ka heater kharab (resistance galat) — sabse aam kaaran",
+    "Connector pins mein jung / dhila",
+    "Galat (non-original) O2 sensor laga hai"
+   ],
+   "s": [
+    "Engine thanda karke O2 sensor ka connector kholo",
+    "Heater ke do pins par resistance naapo (aam taur par 3–15 Ω; open = sensor kharab)",
+    "Connector saaf karo; resistance galat ho to O2 sensor badlo",
+    "Code clear karke ride ke baad dobara scan karo"
+   ]
+  },
+  "P0100": {
+   "n": "MAF sensor circuit",
+   "c": [
+    "MAF sensor gandaa ya kharab",
+    "Air filter ke baad air leak",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "Air filter aur intake pipe check karo",
+    "MAF sensor ko sensor-cleaner se saaf karo",
+    "Connector check karo"
+   ]
+  },
+  "P0101": {
+   "n": "MAF sensor range / performance",
+   "c": [
+    "MAF sensor gandaa ya kharab",
+    "Air filter ke baad air leak",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "Air filter aur intake pipe check karo",
+    "MAF sensor ko sensor-cleaner se saaf karo",
+    "Connector check karo"
+   ]
+  },
+  "P0102": {
+   "n": "MAF sensor circuit low",
+   "c": [
+    "MAF sensor gandaa ya kharab",
+    "Air filter ke baad air leak",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "Air filter aur intake pipe check karo",
+    "MAF sensor ko sensor-cleaner se saaf karo",
+    "Connector check karo"
+   ]
+  },
+  "P0103": {
+   "n": "MAF sensor circuit high",
+   "c": [
+    "MAF sensor gandaa ya kharab",
+    "Air filter ke baad air leak",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "Air filter aur intake pipe check karo",
+    "MAF sensor ko sensor-cleaner se saaf karo",
+    "Connector check karo"
+   ]
+  },
   "P0105": {
    "n": "MAP sensor circuit malfunction",
    "c": [
@@ -166,6 +388,17 @@
     "Key ON engine band par MAP ~ hawa ka dabav (lagbhag 100 kPa) dikhna chahiye"
    ]
   },
+  "P0109": {
+   "n": "MAP sensor circuit intermittent",
+   "c": [
+    "Wiring/connector dhila, kata ya corroded",
+    "MAP sensor kharab"
+   ],
+   "s": [
+    "Connector hila kar Live Data mein MAP value dekho",
+    "Wiring check karo"
+   ]
+  },
   "P0110": {
    "n": "Intake air temp sensor circuit",
    "c": [
@@ -203,6 +436,17 @@
     "Connector check karo",
     "Thande engine par IAT aur bahar ka temp lagbhag barabar hona chahiye",
     "Sensor resistance check karo"
+   ]
+  },
+  "P0114": {
+   "n": "Intake air temp sensor intermittent",
+   "c": [
+    "Wiring/connector dhila, kata ya corroded",
+    "IAT sensor kharab"
+   ],
+   "s": [
+    "Connector check karo",
+    "Wiring hila kar test karo"
    ]
   },
   "P0115": {
@@ -257,6 +501,17 @@
     "Connector aur sensor resistance check karo"
    ]
   },
+  "P0119": {
+   "n": "Engine temp sensor intermittent",
+   "c": [
+    "Wiring/connector dhila, kata ya corroded",
+    "Temp sensor kharab"
+   ],
+   "s": [
+    "Connector check karo",
+    "Wiring hila kar Live Data mein temp dekho"
+   ]
+  },
   "P0120": {
    "n": "Throttle position sensor circuit",
    "c": [
@@ -307,6 +562,40 @@
     "Live Data mein Throttle 0% se 100% tak smooth badhna chahiye",
     "Connector check karo",
     "Throttle body saaf karke TPS reset karo"
+   ]
+  },
+  "P0124": {
+   "n": "Throttle position sensor intermittent",
+   "c": [
+    "TPS ghisa hua",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "Throttle dheere ghumate hue Live Data mein jhatke dekho",
+    "Connector check karo"
+   ]
+  },
+  "P0125": {
+   "n": "Engine temp too low for closed loop",
+   "c": [
+    "Thermostat khula atka (liquid-cooled)",
+    "Temp sensor galat padh raha",
+    "Thande mausam mein chhoti ride"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein temp dekho (80°C+ aana chahiye)",
+    "Thermostat check karo"
+   ]
+  },
+  "P0128": {
+   "n": "Coolant thermostat (temp below regulating)",
+   "c": [
+    "Thermostat khula atka",
+    "Temp sensor kharab"
+   ],
+   "s": [
+    "Engine garam hone ka time dekho",
+    "Thermostat badlo"
    ]
   },
   "P0130": {
@@ -387,6 +676,234 @@
     "Fuse aur 12V supply check karo"
    ]
   },
+  "P0136": {
+   "n": "O2 sensor circuit (Bank 1 Sensor 2)",
+   "c": [
+    "O2 sensor kharab",
+    "Wiring/connector dhila, kata ya corroded",
+    "Exhaust leak"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P0137": {
+   "n": "O2 sensor circuit low voltage (Bank 1 Sensor 2)",
+   "c": [
+    "Exhaust leak (bahar ki hawa)",
+    "Wire short to ground",
+    "Mixture lean"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P0138": {
+   "n": "O2 sensor circuit high voltage (Bank 1 Sensor 2)",
+   "c": [
+    "Wire short to 12V",
+    "Mixture rich",
+    "Sensor kharab"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P0139": {
+   "n": "O2 sensor slow response (Bank 1 Sensor 2)",
+   "c": [
+    "O2 sensor purana / carbon jama",
+    "Exhaust leak"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P013A": {
+   "n": "O2 sensor no activity (Bank 1 Sensor 2)",
+   "c": [
+    "O2 sensor dead",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P013B": {
+   "n": "O2 sensor heater circuit (Bank 1 Sensor 2)",
+   "c": [
+    "O2 heater kharab",
+    "Wiring/connector dhila, kata ya corroded",
+    "Fuse"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P0150": {
+   "n": "O2 sensor circuit (Bank 2 Sensor 1)",
+   "c": [
+    "O2 sensor kharab",
+    "Wiring/connector dhila, kata ya corroded",
+    "Exhaust leak"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P0151": {
+   "n": "O2 sensor circuit low voltage (Bank 2 Sensor 1)",
+   "c": [
+    "Exhaust leak (bahar ki hawa)",
+    "Wire short to ground",
+    "Mixture lean"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P0152": {
+   "n": "O2 sensor circuit high voltage (Bank 2 Sensor 1)",
+   "c": [
+    "Wire short to 12V",
+    "Mixture rich",
+    "Sensor kharab"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P0153": {
+   "n": "O2 sensor slow response (Bank 2 Sensor 1)",
+   "c": [
+    "O2 sensor purana / carbon jama",
+    "Exhaust leak"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P0154": {
+   "n": "O2 sensor no activity (Bank 2 Sensor 1)",
+   "c": [
+    "O2 sensor dead",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P0155": {
+   "n": "O2 sensor heater circuit (Bank 2 Sensor 1)",
+   "c": [
+    "O2 heater kharab",
+    "Wiring/connector dhila, kata ya corroded",
+    "Fuse"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P0156": {
+   "n": "O2 sensor circuit (Bank 2 Sensor 2)",
+   "c": [
+    "O2 sensor kharab",
+    "Wiring/connector dhila, kata ya corroded",
+    "Exhaust leak"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P0157": {
+   "n": "O2 sensor circuit low voltage (Bank 2 Sensor 2)",
+   "c": [
+    "Exhaust leak (bahar ki hawa)",
+    "Wire short to ground",
+    "Mixture lean"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P0158": {
+   "n": "O2 sensor circuit high voltage (Bank 2 Sensor 2)",
+   "c": [
+    "Wire short to 12V",
+    "Mixture rich",
+    "Sensor kharab"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P0159": {
+   "n": "O2 sensor slow response (Bank 2 Sensor 2)",
+   "c": [
+    "O2 sensor purana / carbon jama",
+    "Exhaust leak"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P015A": {
+   "n": "O2 sensor no activity (Bank 2 Sensor 2)",
+   "c": [
+    "O2 sensor dead",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
+  "P015B": {
+   "n": "O2 sensor heater circuit (Bank 2 Sensor 2)",
+   "c": [
+    "O2 heater kharab",
+    "Wiring/connector dhila, kata ya corroded",
+    "Fuse"
+   ],
+   "s": [
+    "Engine garam karke Live Data mein O2 voltage dekho (0.1–0.9V hilna chahiye)",
+    "Exhaust leak check karo",
+    "Connector aur wiring check karo"
+   ]
+  },
   "P0171": {
    "n": "Fuel system too lean",
    "c": [
@@ -413,6 +930,26 @@
     "Air filter check karo",
     "Injector leak test karo",
     "Live Data mein Engine Temp sahi hai ya nahi dekho"
+   ]
+  },
+  "P0174": {
+   "n": "Fuel system too lean (Bank 2)",
+   "c": [
+    "Air leak",
+    "Fuel pressure kam"
+   ],
+   "s": [
+    "Air leak aur fuel pressure check karo"
+   ]
+  },
+  "P0175": {
+   "n": "Fuel system too rich (Bank 2)",
+   "c": [
+    "Injector leak",
+    "Air filter band"
+   ],
+   "s": [
+    "Injector aur air filter check karo"
    ]
   },
   "P0201": {
@@ -481,6 +1018,16 @@
     "Radiator ke fins saaf karo"
    ]
   },
+  "P0219": {
+   "n": "Engine over-speed condition",
+   "c": [
+    "RPM limit se upar chalaya (downshift galti)",
+    "Clutch slip"
+   ],
+   "s": [
+    "Code clear karo; baar-baar aaye to gear/clutch check karo"
+   ]
+  },
   "P0230": {
    "n": "Fuel pump primary circuit",
    "c": [
@@ -492,6 +1039,28 @@
     "Key ON par pump ki 2–3 second awaaz aani chahiye",
     "Relay aur fuse check karo",
     "Pump connector check karo"
+   ]
+  },
+  "P0231": {
+   "n": "Fuel pump secondary circuit low",
+   "c": [
+    "Fuel pump relay/fuse",
+    "Wiring/connector dhila, kata ya corroded",
+    "Pump kharab"
+   ],
+   "s": [
+    "Key ON par pump ki awaaz suno",
+    "Relay, fuse, connector check karo"
+   ]
+  },
+  "P0232": {
+   "n": "Fuel pump secondary circuit high",
+   "c": [
+    "Pump wire short",
+    "Relay atka"
+   ],
+   "s": [
+    "Relay aur wiring check karo"
    ]
   },
   "P0261": {
@@ -514,6 +1083,66 @@
    "s": [
     "Connector check karo",
     "Injector resistance check karo"
+   ]
+  },
+  "P0264": {
+   "n": "Injector 2 circuit low",
+   "c": [
+    "Injector wire short to ground",
+    "Injector kharab"
+   ],
+   "s": [
+    "Wiring aur injector resistance check karo"
+   ]
+  },
+  "P0265": {
+   "n": "Injector 2 circuit high",
+   "c": [
+    "Injector wire open",
+    "Injector coil toota"
+   ],
+   "s": [
+    "Connector aur resistance check karo"
+   ]
+  },
+  "P0267": {
+   "n": "Injector 3 circuit low",
+   "c": [
+    "Injector wire short to ground",
+    "Injector kharab"
+   ],
+   "s": [
+    "Wiring aur injector resistance check karo"
+   ]
+  },
+  "P0268": {
+   "n": "Injector 3 circuit high",
+   "c": [
+    "Injector wire open",
+    "Injector coil toota"
+   ],
+   "s": [
+    "Connector aur resistance check karo"
+   ]
+  },
+  "P0270": {
+   "n": "Injector 4 circuit low",
+   "c": [
+    "Injector wire short to ground",
+    "Injector kharab"
+   ],
+   "s": [
+    "Wiring aur injector resistance check karo"
+   ]
+  },
+  "P0271": {
+   "n": "Injector 4 circuit high",
+   "c": [
+    "Injector wire open",
+    "Injector coil toota"
+   ],
+   "s": [
+    "Connector aur resistance check karo"
    ]
   },
   "P0300": {
@@ -593,6 +1222,37 @@
     "Sensor ka torque sahi hai ya nahi dekho"
    ]
   },
+  "P0326": {
+   "n": "Knock sensor range / performance",
+   "c": [
+    "Knock sensor dhila / kharab",
+    "Engine mein asli knocking (kharab petrol)"
+   ],
+   "s": [
+    "Sensor ka torque check karo",
+    "Achha petrol daal kar dekho"
+   ]
+  },
+  "P0327": {
+   "n": "Knock sensor circuit low",
+   "c": [
+    "Wiring/connector dhila, kata ya corroded",
+    "Sensor kharab"
+   ],
+   "s": [
+    "Connector check karo"
+   ]
+  },
+  "P0328": {
+   "n": "Knock sensor circuit high",
+   "c": [
+    "Wiring/connector dhila, kata ya corroded",
+    "Sensor kharab"
+   ],
+   "s": [
+    "Connector check karo"
+   ]
+  },
   "P0335": {
    "n": "Crankshaft position sensor circuit",
    "c": [
@@ -618,6 +1278,37 @@
     "Wiring check karo"
    ]
   },
+  "P0337": {
+   "n": "Crankshaft position sensor circuit low",
+   "c": [
+    "CKP wire short to ground",
+    "Sensor kharab"
+   ],
+   "s": [
+    "Pickup coil wiring aur resistance check karo"
+   ]
+  },
+  "P0338": {
+   "n": "Crankshaft position sensor circuit high",
+   "c": [
+    "CKP wire open",
+    "Sensor kharab"
+   ],
+   "s": [
+    "Pickup coil wiring check karo"
+   ]
+  },
+  "P0339": {
+   "n": "Crankshaft position sensor intermittent",
+   "c": [
+    "Wiring/connector dhila, kata ya corroded",
+    "Sensor par kachra"
+   ],
+   "s": [
+    "Connector hila kar test karo",
+    "Sensor saaf karo"
+   ]
+  },
   "P0340": {
    "n": "Camshaft position sensor circuit",
    "c": [
@@ -629,6 +1320,36 @@
     "Connector check karo",
     "Sensor check karo",
     "Timing marks check karo"
+   ]
+  },
+  "P0341": {
+   "n": "Camshaft position sensor range / performance",
+   "c": [
+    "Timing chain dhili/khisaki",
+    "Sensor gap galat"
+   ],
+   "s": [
+    "Timing marks check karo"
+   ]
+  },
+  "P0342": {
+   "n": "Camshaft position sensor circuit low",
+   "c": [
+    "Wiring/connector dhila, kata ya corroded",
+    "Sensor kharab"
+   ],
+   "s": [
+    "Connector check karo"
+   ]
+  },
+  "P0343": {
+   "n": "Camshaft position sensor circuit high",
+   "c": [
+    "Wiring/connector dhila, kata ya corroded",
+    "Sensor kharab"
+   ],
+   "s": [
+    "Connector check karo"
    ]
   },
   "P0351": {
@@ -644,6 +1365,49 @@
     "Spark test karo"
    ]
   },
+  "P0352": {
+   "n": "Ignition coil B circuit",
+   "c": [
+    "Ignition coil kharab",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "Coil resistance aur spark check karo"
+   ]
+  },
+  "P0353": {
+   "n": "Ignition coil C circuit",
+   "c": [
+    "Ignition coil kharab",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "Coil resistance aur spark check karo"
+   ]
+  },
+  "P0354": {
+   "n": "Ignition coil D circuit",
+   "c": [
+    "Ignition coil kharab",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "Coil resistance aur spark check karo"
+   ]
+  },
+  "P0420": {
+   "n": "Catalyst efficiency below threshold",
+   "c": [
+    "Catalytic converter kharab",
+    "O2 sensor galat padh raha",
+    "Exhaust leak"
+   ],
+   "s": [
+    "Exhaust leak check karo",
+    "O2 sensors ka Live Data dekho",
+    "Catalyst service center se check karwao"
+   ]
+  },
   "P0500": {
    "n": "Vehicle speed sensor",
    "c": [
@@ -655,6 +1419,43 @@
     "Live Data mein Speed chalte waqt badalni chahiye",
     "Sensor saaf karo",
     "Wiring check karo"
+   ]
+  },
+  "P0501": {
+   "n": "Vehicle speed sensor range / performance",
+   "c": [
+    "Speed sensor par kachra ya gap zyada",
+    "Sensor ka magnet/rotor kharab",
+    "Wiring/connector dhila, kata ya corroded",
+    "Galat size ka tyre/sprocket"
+   ],
+   "s": [
+    "Bike chalate hue Live Data mein Speed dekho — meter ke barabar honi chahiye",
+    "Speed sensor nikaal kar saaf karo, gap aur mounting check karo",
+    "Connector aur wiring check karo",
+    "Tyre/sprocket badla ho to bataayein; code clear karke test ride lo"
+   ]
+  },
+  "P0502": {
+   "n": "Vehicle speed sensor circuit low",
+   "c": [
+    "Sensor wire short to ground",
+    "Sensor kharab"
+   ],
+   "s": [
+    "Wiring check karo",
+    "Live Data mein speed dekho"
+   ]
+  },
+  "P0503": {
+   "n": "Vehicle speed sensor intermittent",
+   "c": [
+    "Wiring/connector dhila, kata ya corroded",
+    "Sensor dhila"
+   ],
+   "s": [
+    "Connector hila kar test karo",
+    "Sensor ki mounting check karo"
    ]
   },
   "P0505": {
@@ -691,6 +1492,26 @@
    "s": [
     "Air leak check karo",
     "Throttle cable free play check karo"
+   ]
+  },
+  "P0508": {
+   "n": "Idle air control circuit low",
+   "c": [
+    "Idle valve kharab",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "Connector check karo"
+   ]
+  },
+  "P0509": {
+   "n": "Idle air control circuit high",
+   "c": [
+    "Idle valve kharab",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "Connector check karo"
    ]
   },
   "P0560": {
@@ -730,6 +1551,16 @@
     "Battery check karo"
    ]
   },
+  "P0600": {
+   "n": "ECU serial communication link",
+   "c": [
+    "Wiring/connector dhila, kata ya corroded",
+    "ECU ka ground kharab"
+   ],
+   "s": [
+    "ECU connector aur ground check karo"
+   ]
+  },
   "P0601": {
    "n": "ECU memory checksum error",
    "c": [
@@ -750,6 +1581,81 @@
     "Service center se ECU reflash karwao"
    ]
   },
+  "P0603": {
+   "n": "ECU keep-alive memory error",
+   "c": [
+    "Battery disconnect hui / kamzor",
+    "ECU ki memory"
+   ],
+   "s": [
+    "Battery check karo, code clear karo"
+   ]
+  },
+  "P0604": {
+   "n": "ECU RAM error",
+   "c": [
+    "ECU andar se kharab"
+   ],
+   "s": [
+    "Battery reconnect karke dekho; wapas aaye to ECU service center"
+   ]
+  },
+  "P0605": {
+   "n": "ECU ROM error",
+   "c": [
+    "ECU programming/ROM kharab"
+   ],
+   "s": [
+    "Service center se ECU check/reflash karwao"
+   ]
+  },
+  "P0606": {
+   "n": "ECU processor fault",
+   "c": [
+    "ECU andar se kharab",
+    "Supply voltage galat"
+   ],
+   "s": [
+    "Battery aur ground check karo; phir bhi aaye to ECU check karwao"
+   ]
+  },
+  "P0627": {
+   "n": "Fuel pump control circuit open",
+   "c": [
+    "Pump relay/wire open"
+   ],
+   "s": [
+    "Relay, fuse aur wiring check karo"
+   ]
+  },
+  "P0628": {
+   "n": "Fuel pump control circuit low",
+   "c": [
+    "Wire short to ground"
+   ],
+   "s": [
+    "Wiring check karo"
+   ]
+  },
+  "P0629": {
+   "n": "Fuel pump control circuit high",
+   "c": [
+    "Wire short to 12V"
+   ],
+   "s": [
+    "Wiring check karo"
+   ]
+  },
+  "P0641": {
+   "n": "Sensor reference voltage A circuit",
+   "c": [
+    "5V supply short (koi sensor/wire)",
+    "ECU"
+   ],
+   "s": [
+    "Ek-ek sensor connector nikaal kar dekho code jata hai ya nahi"
+   ]
+  },
   "P0650": {
    "n": "MIL (check-engine light) control circuit",
    "c": [
@@ -759,6 +1665,16 @@
    "s": [
     "Key ON par MIL jalni chahiye",
     "Wiring check karo"
+   ]
+  },
+  "P0651": {
+   "n": "Sensor reference voltage B circuit",
+   "c": [
+    "5V supply short",
+    "ECU"
+   ],
+   "s": [
+    "Sensors ki 5V wiring check karo"
    ]
   },
   "P0657": {
@@ -779,6 +1695,17 @@
    "s": [
     "Is bike ke service manual mein code dekho",
     "Company ke service center tool se confirm karo"
+   ]
+  },
+  "U0001": {
+   "n": "CAN bus communication fault",
+   "c": [
+    "CAN wiring toota / short",
+    "Koi module ka connector dhila"
+   ],
+   "s": [
+    "Saare modules ke connector check karo",
+    "CAN wiring check karo"
    ]
   },
   "U0100": {
@@ -804,6 +1731,16 @@
    "s": [
     "ABS fuse check karo",
     "ABS unit ka connector check karo"
+   ]
+  },
+  "U0140": {
+   "n": "Lost communication with body control module",
+   "c": [
+    "Module connector dhila",
+    "Wiring/connector dhila, kata ya corroded"
+   ],
+   "s": [
+    "Connector aur fuse check karo"
    ]
   },
   "U0155": {
