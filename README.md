@@ -64,3 +64,10 @@ Uske baad sheet mein jo bhi badlo, app roz (ya ↻ dabane par) le leta hai.
 
 ## Sab free hai
 - Google Sheet (products), Firebase Messaging (notifications), GitHub public repo + Actions (codes, APK, updates), Gemini free tier (AI salah).
+
+## AI salah server (ek baar, free, bina key ke users)
+1. **script.google.com** → New project → `apps-script/Code.gs` ka code paste karo → Save.
+2. Project Settings (⚙) → Script properties → `GEMINI_KEY` = aistudio.google.com ki free key.
+3. Deploy → New deployment → type **Web app** → Execute as **Me** → Who has access **Anyone** → Deploy → Authorize.
+4. `/exec` wala URL `config/app.json` mein `ai_url` par daalo (main branch). Sab phones agli baar khulne par le lenge.
+Limit: ek phone se din mein 20, total 400 sawaal (Code.gs mein badal sakte ho).

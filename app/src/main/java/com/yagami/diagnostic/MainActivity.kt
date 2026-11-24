@@ -429,6 +429,7 @@ class MainActivity : Activity() {
         val doDb = prefs().getString("db_day", "") != today
         net.execute {
             if (doDb && DtcDb.refresh(this).startsWith("Code database")) prefs().edit().putString("db_day", today).apply()
+            OnlineConfig.refreshRemote(this)
             if (ProductDb.url(this).isNotBlank()) ProductDb.refresh(this)
             val (u, _) = Updater.check(this, appVersion())
             ui.post { updateInfo = u; if (screen == Screen.DASHBOARD) buildDashboard() }
@@ -920,9 +921,12 @@ class MainActivity : Activity() {
         up.addView(upRow)
         body.addView(up, lp(-1, -2).apply { bottomMargin = dp(10) })
 
-        val ai = sectionCard("AI salah (Gemini key · free)")
+        val ai = sectionCard("AI salah")
         val has = !prefs().getString("ai_key", "").isNullOrBlank()
-        ai.addView(tv(if (has) "Key save hai ✓ (sirf is phone mein)" else "Key nahi dali. aistudio.google.com par free API key banakar yahan daalein.", 12.5f, if (has) T.green else T.muted, true).apply { setPadding(0, 0, 0, dp(10)) })
+        val srv = OnlineConfig.aiUrl(this).isNotBlank()
+        ai.addView(tv(when { has -> "Chalu ✓ (is phone ki apni key)"; srv -> "Chalu ✓ (YAGAMI server, key ki zaroorat nahi)"; else -> "YAGAMI server abhi set nahi hua" },
+            12.5f, if (has || srv) T.green else T.muted, true))
+        ai.addView(tv("Apni Gemini key (optional, sirf advanced use)", 11.5f, T.muted).apply { setPadding(0, dp(10), 0, dp(6)) })
         val key = field("").apply { hint = "AIza…"; inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD }
         ai.addView(key, lp(-1, dp(48)))
         val aiRow = row().apply { setPadding(0, dp(10), 0, 0) }
@@ -1155,9 +1159,12 @@ class MainActivity : Activity() {
         if (focus != aiFocus) { aiAnswer = null; aiFocus = focus }
         val (root, body) = shell(detailBar("AI salah", focus ?: "Poori bike", "Online", T.green), Tab.HOME)
         val key = prefs().getString("ai_key", "").orEmpty()
-        if (key.isBlank()) {
-            body.addView(banner("SETUP", "AI salah ke liye free Gemini API key chahiye (aistudio.google.com). Connect tab → Online → AI salah mein key daalein."), lp(-1, -2).apply { bottomMargin = dp(12) })
-            body.addView(primary("Key daalne jao") { goTab(Tab.CONNECT) }, lp(-1, dp(50)))
+        val server = OnlineConfig.aiUrl(this)
+        if (key.isBlank() && server.isBlank()) {
+            body.addView(banner("SOON", "AI salah abhi chalu nahi hua. Internet on rakhein; YAGAMI server set hote hi apne-aap chalu ho jayega."), lp(-1, -2).apply { bottomMargin = dp(12) })
+            body.addView(primary("↻ Check karo") {
+                net.execute { OnlineConfig.refreshRemote(this); ui.post { if (screen == Screen.AI) buildAi() } }
+            }, lp(-1, dp(50)))
             setContentView(root); return
         }
         if (scanResults == null && focus == null) body.addView(banner("TIP", "Pehle All ECU Scan chalao, taaki AI ko codes mil sakein."), lp(-1, -2).apply { bottomMargin = dp(12) })
@@ -1172,7 +1179,9 @@ class MainActivity : Activity() {
             out.text = "Soch raha hai… (10–20 second)"; out.setTextColor(T.yellow); ask.isEnabled = false
             val prompt = aiPrompt()
             net.execute {
-                val ans = try { Ai.ask(key, prompt) } catch (e: Exception) { "Internet se nahi mila: ${e.message ?: e.javaClass.simpleName}" }
+                val ans = try {
+                    if (key.isNotBlank()) Ai.ask(key, prompt) else Ai.askServer(server, OnlineConfig.deviceId(this), prompt)
+                } catch (e: Exception) { "Internet se nahi mila: ${e.message ?: e.javaClass.simpleName}" }
                 ui.post { aiAnswer = ans; ask.isEnabled = true; if (screen == Screen.AI) { out.text = ans; out.setTextColor(T.white) } }
             }
         }

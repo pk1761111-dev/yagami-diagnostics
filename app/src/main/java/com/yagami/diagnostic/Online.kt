@@ -28,8 +28,14 @@ object Net {
             c.connectTimeout = 15000; c.readTimeout = timeoutMs
             c.setRequestProperty("Content-Type", "application/json")
             headers.forEach { (k, v) -> c.setRequestProperty(k, v) }
+            c.instanceFollowRedirects = false
             c.outputStream.use { it.write(json.toByteArray()) }
             val code = c.responseCode
+            // Google Apps Script answers a POST with a redirect to the result: fetch it with GET.
+            if (code in 301..303 || code == 307 || code == 308) {
+                val loc = c.getHeaderField("Location") ?: return code to ""
+                return get(loc, timeoutMs = timeoutMs)
+            }
             val body = (if (code in 200..299) c.inputStream else c.errorStream)?.bufferedReader()?.use { it.readText() } ?: ""
             return code to body
         } finally { c.disconnect() }
@@ -42,6 +48,25 @@ object OnlineConfig {
     fun repo(ctx: Context): String = ctx.getSharedPreferences("yagami", Context.MODE_PRIVATE).getString("repo", DEFAULT_REPO) ?: DEFAULT_REPO
     fun dbUrl(ctx: Context) = "https://raw.githubusercontent.com/${repo(ctx)}/main/dtc/dtc_codes.json"
     fun releaseUrl(ctx: Context) = "https://api.github.com/repos/${repo(ctx)}/releases/latest"
+    fun configUrl(ctx: Context) = "https://raw.githubusercontent.com/${repo(ctx)}/main/config/app.json"
+
+    /** Remote settings from GitHub (config/app.json), so the AI server link can change without a new APK. */
+    fun refreshRemote(ctx: Context) {
+        try {
+            val (code, body) = Net.get(configUrl(ctx))
+            if (code == 200) {
+                val o = JSONObject(body)
+                ctx.getSharedPreferences("yagami", Context.MODE_PRIVATE).edit().putString("ai_url", o.optString("ai_url").trim()).apply()
+            }
+        } catch (e: Exception) {}
+    }
+
+    fun aiUrl(ctx: Context): String = ctx.getSharedPreferences("yagami", Context.MODE_PRIVATE).getString("ai_url", "").orEmpty()
+
+    fun deviceId(ctx: Context): String {
+        val p = ctx.getSharedPreferences("yagami", Context.MODE_PRIVATE)
+        return p.getString("device_id", null) ?: java.util.UUID.randomUUID().toString().also { p.edit().putString("device_id", it).apply() }
+    }
 }
 
 data class DtcEntry(val name: String, val causes: List<String>, val checks: List<String>)
@@ -119,6 +144,16 @@ object Ai {
         val sb = StringBuilder()
         for (i in 0 until parts.length()) { val p = parts.getJSONObject(i); if (!p.optBoolean("thought")) sb.append(p.optString("text")) }
         return sb.toString().trim()
+    }
+
+    /** Through the YAGAMI server (Apps Script): no key on the phone. */
+    fun askServer(url: String, device: String, prompt: String): String {
+        val (code, resp) = Net.postJson(url, JSONObject().put("prompt", prompt).put("device", device).toString(), emptyMap())
+        if (code != 200) return "AI server se jawab nahi mila (HTTP $code). Thodi der baad try karo."
+        return try {
+            val o = JSONObject(resp)
+            if (o.optBoolean("ok")) o.optString("text").ifBlank { "AI ne khaali jawab diya." } else o.optString("error", "AI server error")
+        } catch (e: Exception) { "AI server ka jawab samajh nahi aaya." }
     }
 
     fun ask(apiKey: String, prompt: String): String {
