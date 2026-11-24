@@ -5,13 +5,15 @@
  * Setup: Project Settings → Script properties → add GEMINI_KEY = <key from aistudio.google.com>
  * Deploy → New deployment → Web app → Execute as: Me → Who has access: Anyone → Deploy → copy the /exec URL.
  */
+var SEARCH_MODEL = 'gemini-2.5-flash';   // only model with free Google Search grounding
 var MODELS = ['gemini-flash-latest', 'gemini-3.5-flash', 'gemini-2.5-flash'];
 var PER_DEVICE_PER_DAY = 20;   // one phone cannot use up the whole free quota
 var TOTAL_PER_DAY = 400;       // stays inside the Gemini free tier
 
 var SYSTEM = 'Tum ek anubhavi Indian two-wheeler mechanic ho. Hinglish (Roman Hindi) mein, chhote points mein jawab do. ' +
   'Sirf diye gaye data par bharosa karo; jo data nahi hai uska andaza mat lagao aur saaf bolo ki pakka nahi keh sakte. ' +
-  'Safety wali baat (brakes, ABS, fuel leak, overheating) sabse pehle likho.';
+  'Safety wali baat (brakes, ABS, fuel leak, overheating) sabse pehle likho. ' +
+  'Google Search mile to Indian bikes ke service manual, forum aur company ki jaankari se confirm karo.';
 
 function out(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
@@ -46,22 +48,41 @@ function doPost(e) {
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
     generationConfig: { maxOutputTokens: 2048, temperature: 0.4 }
   };
-  var last = '';
+  // 1) With Google Search (free tier: gemini-2.5-flash, up to 500/day), so answers can use the internet.
+  var grounded = JSON.parse(JSON.stringify(payload));
+  grounded.tools = [{ google_search: {} }];
+  var g = callGemini(key, SEARCH_MODEL, grounded);
+  if (g.ok) return out(g);
+
+  // 2) Without search, newest model first.
+  var last = g.error || '';
   for (var i = 0; i < MODELS.length; i++) {
-    var r = UrlFetchApp.fetch('https://generativelanguage.googleapis.com/v1beta/models/' + MODELS[i] + ':generateContent', {
-      method: 'post', contentType: 'application/json', headers: { 'x-goog-api-key': key },
-      payload: JSON.stringify(payload), muteHttpExceptions: true
-    });
-    var code = r.getResponseCode();
-    if (code === 200) {
-      var j = JSON.parse(r.getContentText());
-      var parts = (((j.candidates || [])[0] || {}).content || {}).parts || [];
-      var text = parts.filter(function (p) { return !p.thought; }).map(function (p) { return p.text || ''; }).join('').trim();
-      return out({ ok: true, text: text || 'AI ne khaali jawab diya.', model: MODELS[i] });
-    }
-    last = 'HTTP ' + code;
-    if (code === 429) return out({ ok: false, limit: true, error: 'Gemini free limit abhi poori hai. Thodi der baad try karein.' });
-    if (code !== 404) break;
+    var r = callGemini(key, MODELS[i], payload);
+    if (r.ok) return out(r);
+    last = r.error;
+    if (r.code === 429) return out({ ok: false, limit: true, error: 'Gemini free limit abhi poori hai. Thodi der baad try karein.' });
+    if (r.code !== 404) break;
   }
   return out({ ok: false, error: 'AI se jawab nahi mila (' + last + ')' });
+}
+
+/** One Gemini call. Returns {ok, text, model, sources:[{title,url}]} or {ok:false, code, error}. */
+function callGemini(key, model, payload) {
+  var r = UrlFetchApp.fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent', {
+    method: 'post', contentType: 'application/json', headers: { 'x-goog-api-key': key },
+    payload: JSON.stringify(payload), muteHttpExceptions: true
+  });
+  var code = r.getResponseCode();
+  if (code !== 200) return { ok: false, code: code, error: 'HTTP ' + code };
+  var j = JSON.parse(r.getContentText());
+  var cand = (j.candidates || [])[0] || {};
+  var parts = (cand.content || {}).parts || [];
+  var text = parts.filter(function (p) { return !p.thought; }).map(function (p) { return p.text || ''; }).join('').trim();
+  if (!text) return { ok: false, code: 200, error: 'khaali jawab' };
+  var sources = [];
+  var chunks = ((cand.groundingMetadata || {}).groundingChunks) || [];
+  chunks.forEach(function (c) {
+    if (c.web && c.web.uri && sources.length < 5) sources.push({ title: c.web.title || c.web.uri, url: c.web.uri });
+  });
+  return { ok: true, text: text, model: model, searched: !!cand.groundingMetadata, sources: sources };
 }

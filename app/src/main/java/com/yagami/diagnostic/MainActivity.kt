@@ -1154,25 +1154,50 @@ class MainActivity : Activity() {
         return sb.toString()
     }
 
+    /**
+     * Sends the question to the user's own Gemini (their Google login, their free quota, with internet search).
+     * Gemini app if installed (prompt pre-filled through Share), else gemini.google.com with the prompt copied.
+     */
+    private fun askOwnGemini(prompt: String) {
+        val full = "Tum ek anubhavi Indian two-wheeler mechanic ho. Hinglish mein chhota jawab do, safety pehle.\n\n$prompt"
+        (getSystemService(CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(ClipData.newPlainText("YAGAMI AI", full))
+        val send = Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, full); setPackage("com.google.android.apps.bard") }
+        try {
+            if (send.resolveActivity(packageManager) != null) { startActivity(send); return }
+        } catch (e: Exception) {}
+        toast("Sawaal copy ho gaya. Gemini mein paste karke bhejein.")
+        openUrl("https://gemini.google.com/app")
+    }
+
     private fun buildAi() {
         val focus = selectedCode?.first
         if (focus != aiFocus) { aiAnswer = null; aiFocus = focus }
         val (root, body) = shell(detailBar("AI salah", focus ?: "Poori bike", "Online", T.green), Tab.HOME)
         val key = prefs().getString("ai_key", "").orEmpty()
         val server = OnlineConfig.aiUrl(this)
+        val own = card().apply { background = vgradient(dpf(16f), alpha(T.blue, 34), T.card).apply { setStroke(dp(1), alpha(T.blue, 110)) } }
+        own.addView(tv("Apne Google Gemini se poochho", 16f, T.white, true))
+        own.addView(tv("Aapke Google ID wala Gemini · free · internet search ke saath. Codes aur bike ki jaankari apne-aap bhar jayegi.", 12.5f, T.muted).apply { setPadding(0, dp(4), 0, dp(12)) })
+        own.addView(tv("Gemini mein poochho", 15.5f, Color.WHITE, true).apply {
+            gravity = Gravity.CENTER; isClickable = true
+            background = ripple(rounded(T.blue, dpf(12f)), dpf(12f))
+            setOnClickListener { askOwnGemini(aiPrompt()) }
+        }, lp(-1, dp(50)))
+        body.addView(own, lp(-1, -2).apply { bottomMargin = dp(12) })
         if (key.isBlank() && server.isBlank()) {
-            body.addView(banner("SOON", "AI salah abhi chalu nahi hua. Internet on rakhein; YAGAMI server set hote hi apne-aap chalu ho jayega."), lp(-1, -2).apply { bottomMargin = dp(12) })
-            body.addView(primary("↻ Check karo") {
-                net.execute { OnlineConfig.refreshRemote(this); ui.post { if (screen == Screen.AI) buildAi() } }
-            }, lp(-1, dp(50)))
+            if (scanResults == null && focus == null) body.addView(banner("TIP", "Pehle All ECU Scan chalao, taaki AI ko codes mil sakein."), lp(-1, -2).apply { bottomMargin = dp(12) })
+            val what0 = sectionCard("AI ko ye bheja jayega")
+            what0.addView(tv(aiPrompt().substringBefore("\nBatao:"), 12f, T.muted).apply { typeface = Typeface.MONOSPACE })
+            body.addView(what0, lp(-1, -2))
             setContentView(root); return
         }
+        body.addView(sectionTitle("Ya app ke andar hi jawab"), lp(-1, -2))
         if (scanResults == null && focus == null) body.addView(banner("TIP", "Pehle All ECU Scan chalao, taaki AI ko codes mil sakein."), lp(-1, -2).apply { bottomMargin = dp(12) })
         val what = sectionCard("AI ko ye bheja jayega")
         what.addView(tv(aiPrompt().substringBefore("\nBatao:"), 12f, T.muted).apply { typeface = Typeface.MONOSPACE })
-        what.addView(tv("Google Gemini (free) ko jayega. Free tier ka data Google apni service sudharne mein use kar sakta hai.", 11.5f, T.muted).apply { setPadding(0, dp(8), 0, 0) })
+        what.addView(tv("Google Gemini (free) ko jayega, jo Google Search se internet par bhi dekhta hai. Free tier ka data Google apni service sudharne mein use kar sakta hai.", 11.5f, T.muted).apply { setPadding(0, dp(8), 0, 0) })
         body.addView(what, lp(-1, -2).apply { bottomMargin = dp(10) })
-        val out = tv(aiAnswer ?: "", 14f, T.white).apply { setTextIsSelectable(true) }
+        val out = tv(aiAnswer ?: "", 14f, T.white).apply { setTextIsSelectable(true); autoLinkMask = android.text.util.Linkify.WEB_URLS; setLinkTextColor(T.yellow) }
         val outCard = sectionCard("AI ka jawab").apply { addView(out) }
         val ask = primary(if (aiAnswer == null) "AI se salah lo" else "↻ Dobara poochho") {}
         ask.setOnClickListener {

@@ -152,7 +152,14 @@ object Ai {
         if (code != 200) return "AI server se jawab nahi mila (HTTP $code). Thodi der baad try karo."
         return try {
             val o = JSONObject(resp)
-            if (o.optBoolean("ok")) o.optString("text").ifBlank { "AI ne khaali jawab diya." } else o.optString("error", "AI server error")
+            if (!o.optBoolean("ok")) return o.optString("error", "AI server error")
+            val sb = StringBuilder(o.optString("text").ifBlank { "AI ne khaali jawab diya." })
+            val src = o.optJSONArray("sources")
+            if (src != null && src.length() > 0) {
+                sb.append("\n\n🌐 Google Search se:")
+                for (i in 0 until src.length()) { val x = src.getJSONObject(i); sb.append("\n• ").append(x.optString("title")).append("\n  ").append(x.optString("url")) }
+            }
+            sb.toString()
         } catch (e: Exception) { "AI server ka jawab samajh nahi aaya." }
     }
 
